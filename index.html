@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>給綺晴小朋友的專屬驚喜 ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+        }
+
+        body {
+            background-color: #e0f2fe; /* 淺藍色背景 */
+            color: #334155;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(186, 230, 253, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 420px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        h1, h2 {
+            color: #0284c7;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 1.5rem;
+            position: relative;
+            min-height: 50px;
+        }
+
+        button {
+            background-color: #38bdf8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+        }
+
+        button:hover {
+            background-color: #0284c7;
+            transform: translateY(-2px);
+        }
+
+        .btn-evade {
+            position: absolute;
+            background-color: #94a3b8;
+            box-shadow: none;
+        }
+
+        .btn-evade:hover {
+            background-color: #64748b;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bae6fd;
+            border-radius: 10px;
+            margin-top: 10px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"]:focus {
+            border-color: #38bdf8;
+        }
+
+        .note {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        .food-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        .food-options label {
+            background: #f0f9ff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #bae6fd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="page1" class="page active">
+            <h1>親愛的綺晴小朋友 💕</h1>
+            <p>請問妳願意接受這個遲到的情人節小驚喜嗎？</p>
+            <div class="btn-group">
+                <button onclick="nextPage(2)">接受 💖</button>
+                <button id="noBtn1" class="btn-evade" style="right: 20px;">不接受 😜</button>
+            </div>
+        </div>
+
+        <div id="page2" class="page">
+            <h2>請問妳晚餐想要吃什麼呢？</h2>
+            <div class="btn-group" style="flex-direction: column; gap: 10px;">
+                <button onclick="selectType('healthy')">🥗 走健康路線</button>
+                <button onclick="selectType('unhealthy')">🍔 快樂不健康路線</button>
+            </div>
+        </div>
+
+        <div id="page3" class="page">
+            <h2>為綺晴小朋友準備的選單 🍽️</h2>
+            <div class="food-options" id="foodContainer">
+                </div>
+            
+            <div style="margin-top: 15px; text-align: left;">
+                <label>都不想吃？自己點餐：</label>
+                <input type="text" id="customFood" placeholder="請輸入妳想吃的餐點">
+                <div class="note">（註明：不能填寫我的名字喔 🙈）</div>
+            </div>
+
+            <div class="btn-group">
+                <button onclick="nextPage(4)">選好了，下一步 ✨</button>
+            </div>
+        </div>
+
+        <div id="page4" class="page">
+            <h2>需求都收到囉！🥰</h2>
+            <p><strong>綺晴小朋友，情人節快樂！</strong></p>
+            <p>下一個情人節也要跟我一起過嗎？</p>
+            
+            <p style="font-size: 0.9rem; color: #0284c7; margin-top: 15px;">
+                按下「要」之後，記得要自己傳一張妳最可愛的照片給我喔！📸
+            </p>
+
+            <div class="btn-group">
+                <button onclick="finish()">要！永遠一起 💖</button>
+                <button id="noBtn2" class="btn-evade" style="right: 10px;">不要 🙈</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切換頁面
+        function nextPage(pageNumber) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page' + pageNumber).classList.add('active');
+        }
+
+        // 選擇健康/不健康路線
+        function selectType(type) {
+            const container = document.getElementById('foodContainer');
+            container.innerHTML = '';
+
+            let options = [];
+            if (type === 'healthy') {
+                options = ['健康舒肥雞胸肉餐盒 🥗', '鮮美日式生魚片丼飯 🍱', '清涼鮮蔬沙拉 / 溫沙拉 🥑'];
+            } else {
+                options = ['香濃起司美式漢堡炸雞 🍔', '罪惡感滿滿麻辣火鍋 🍲', '酥脆日式炸豬排咖哩 🍛'];
+            }
+
+            options.forEach((item, index) => {
+                container.innerHTML += `
+                    <label>
+                        <input type="radio" name="food" value="${item}" ${index === 0 ? 'checked' : ''}> ${item}
+                    </label>
+                `;
+            });
+
+            nextPage(3);
+        }
+
+        // 完成結尾
+        function finish() {
+            alert('耶！太棒了～記得傳一張妳最可愛的照片給我喔！❤️');
+        }
+
+        // 按鈕隨機跳動邏輯 (躲避滑鼠/觸控)
+        function makeBtnEvade(btnId) {
+            const btn = document.getElementById(btnId);
+            
+            const moveButton = () => {
+                // 限制在視窗可見範圍內
+                const x = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
+                const y = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
+                
+                btn.style.position = 'fixed';
+                btn.style.left = `${x}px`;
+                btn.style.top = `${y}px`;
+            };
+
+            btn.addEventListener('mouseover', moveButton);
+            btn.addEventListener('touchstart', moveButton); // 支援手機觸控
+        }
+
+        // 初始化跳動按鈕
+        makeBtnEvade('noBtn1');
+        makeBtnEvade('noBtn2');
+    </script>
+</body>
+</html>
