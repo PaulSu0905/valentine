@@ -77,7 +77,7 @@
             font-weight: 600;
             border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.15s ease, background-color 0.2s ease;
+            transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
             box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
             touch-action: manipulation;
             min-width: 110px;
@@ -87,7 +87,14 @@
             align-items: center;
         }
 
-        button:active {
+        button:disabled {
+            background-color: #cbd5e1;
+            box-shadow: none;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        button:active:not(:disabled) {
             transform: scale(0.96);
         }
 
@@ -148,7 +155,6 @@
             height: 18px;
         }
 
-        /* 歌曲與機票卡片樣式 */
         .ticket-box, .song-box {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 2px dashed #0284c7;
@@ -226,7 +232,6 @@
             line-height: 1.5;
         }
 
-        /* 倒數計時器容器 */
         .countdown-container {
             display: flex;
             justify-content: space-between;
@@ -293,12 +298,12 @@
                     
                     <div style="margin-top: 10px; text-align: left;">
                         <label style="font-size: 0.85rem; font-weight: 600;">都不想吃？自己點餐：</label>
-                        <input type="text" id="customFood" name="自訂想吃的餐點" placeholder="請輸入妳想吃的餐點" oninput="clearRadioSelection()">
+                        <input type="text" id="customFood" name="自訂想吃的餐點" placeholder="請輸入妳想吃的餐點" oninput="handleCustomInput()">
                         <div class="note">（註明：不能寫我喔 🙈）</div>
                     </div>
 
                     <div class="btn-group">
-                        <button type="button" style="width: 100%;" onclick="validateFoodAndNext()">選好了，抽一首送給妳的歌</button>
+                        <button type="button" id="foodNextBtn" style="width: 100%;" disabled onclick="validateFoodAndNext()">選好了，抽一首送給妳的歌</button>
                     </div>
                 </div>
             </div>
@@ -384,7 +389,6 @@
             document.getElementById('page' + pageIdentifier).classList.add('active');
         }
 
-        // 選擇晚餐路線與顯示選項
         function selectType(type) {
             document.getElementById('routeStep').style.display = 'none';
             document.getElementById('menuStep').style.display = 'block';
@@ -408,28 +412,32 @@
             options.forEach((item) => {
                 container.innerHTML += `
                     <label>
-                        <input type="radio" name="預設菜單選擇" value="${item}" onchange="clearCustomInput()"> ${item}
+                        <input type="radio" name="預設菜單選擇" value="${item}" onchange="handleRadioChange()"> ${item}
                     </label>
                 `;
             });
+
+            checkSelectionState();
         }
 
-        // 輸入自訂餐點時，清空 Radio 點選狀態
-        function clearRadioSelection() {
+        // 當點選選項時，清除輸入框並更新按鈕狀態
+        function handleRadioChange() {
+            document.getElementById('customFood').value = '';
+            checkSelectionState();
+        }
+
+        // 當輸入自訂文字時，取消單選並更新按鈕狀態
+        function handleCustomInput() {
             const inputVal = document.getElementById('customFood').value;
             if (inputVal.trim() !== '') {
                 const radios = document.getElementsByName('預設菜單選擇');
                 radios.forEach(radio => radio.checked = false);
             }
+            checkSelectionState();
         }
 
-        // 點選 Radio 時，清空自訂輸入框內容
-        function clearCustomInput() {
-            document.getElementById('customFood').value = '';
-        }
-
-        // 驗證是否有勾選或輸入食物
-        function validateFoodAndNext() {
+        // 動態檢查是否有選擇或輸入食物，來決定按鈕開關
+        function checkSelectionState() {
             const customVal = document.getElementById('customFood').value.trim();
             const radios = document.getElementsByName('預設菜單選擇');
             let isRadioChecked = false;
@@ -441,15 +449,20 @@
                 }
             }
 
-            if (!isRadioChecked && customVal === '') {
-                alert('請先選擇一個想吃的餐點，或是填寫自訂餐點喔！');
-                return;
+            const nextBtn = document.getElementById('foodNextBtn');
+            if (isRadioChecked || customVal !== '') {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
             }
+        }
 
+        function validateFoodAndNext() {
+            const nextBtn = document.getElementById('foodNextBtn');
+            if (nextBtn.disabled) return;
             nextPage('Song');
         }
 
-        // 抽取歌曲邏輯（含歌曲名稱、圖片與播放網址）
         const songList = [
             {
                 title: "wave to earth - bad 🌊",
@@ -482,14 +495,12 @@
             document.getElementById('nextAfterSongBtn').style.display = 'inline-flex';
         }
 
-        // 抽機票邏輯
         function drawTicket() {
             document.getElementById('ticketBox').style.display = 'block';
             document.getElementById('drawBtn').style.display = 'none';
             document.getElementById('nextAfterDrawBtn').style.display = 'inline-flex';
         }
 
-        // 送出表單資料並進入倒數計時頁面
         async function submitAndNext() {
             const form = document.getElementById('valentineForm');
             const data = new FormData(form);
@@ -508,7 +519,6 @@
             startCountdown();
         }
 
-        // 倒數計時器邏輯（目標時間：2026/12/17 00:00:00）
         function startCountdown() {
             const targetDate = new Date("2026-12-17T00:00:00").getTime();
 
@@ -538,7 +548,6 @@
             setInterval(updateTimer, 1000);
         }
 
-        // 避開按鈕邏輯
         function makeBtnEvade(btnId) {
             const btn = document.getElementById(btnId);
 
