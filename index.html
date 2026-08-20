@@ -19,7 +19,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100dvh; /* 相容 iOS 網址列高度 */
+            min-height: 100dvh;
             padding: 20px;
             overflow: hidden;
         }
@@ -58,21 +58,22 @@
             display: block;
         }
 
+        /* 統一按鈕區域排版 */
         .btn-group {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             margin-top: 1.5rem;
-            position: relative;
-            min-height: 52px;
+            min-height: 48px;
+            width: 100%;
         }
 
         button {
             background-color: #38bdf8;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 24px;
             font-size: 1rem;
             font-weight: 600;
             border-radius: 20px;
@@ -80,17 +81,22 @@
             transition: transform 0.15s ease, background-color 0.2s ease;
             box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
             touch-action: manipulation;
+            min-width: 110px;
+            height: 48px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
         }
 
         button:active {
             transform: scale(0.96);
         }
 
-        /* 拒絕按鈕初始樣式：齊平排版 */
         .btn-evade {
             background-color: #94a3b8;
             box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
             z-index: 999;
+            transition: top 0.1s ease, left 0.1s ease;
         }
 
         input[type="text"] {
@@ -168,7 +174,7 @@
                 </div>
             </div>
 
-            <!-- 第三頁 -->
+            <!-- 第三頁：選菜單 + 按下直接送出 -->
             <div id="page3" class="page">
                 <h2>為綺晴小朋友準備的選單 🍽️</h2>
                 
@@ -184,24 +190,28 @@
                 </div>
 
                 <div class="btn-group">
-                    <button type="button" style="width: 100%;" onclick="nextPage(4)">選好了，下一步 ✨</button>
+                    <button type="button" id="submitFoodBtn" style="width: 100%;" onclick="submitAndNext()">選好了，下一步 ✨</button>
                 </div>
             </div>
 
-            <!-- 第四頁 -->
+            <!-- 第四頁：問下一個情人節 -->
             <div id="page4" class="page">
-                <h2>需求都收到囉！🥰</h2>
-                <p><strong>綺晴小朋友，情人節快樂！</strong></p>
+                <h2>綺晴小朋友 ❤️</h2>
                 <p>下一個情人節也要跟我一起過嗎？</p>
-                
-                <p style="font-size: 0.85rem; color: #0284c7; margin-top: 10px;">
-                    按下「要」之後，請自己傳一張妳可愛的照片給我！📸
-                </p>
 
                 <div class="btn-group">
-                    <button type="submit" id="submitBtn">要！💖</button>
+                    <button type="button" onclick="nextPage(5)">要！💖</button>
                     <button type="button" id="noBtn2" class="btn-evade">不要 🙈</button>
                 </div>
+            </div>
+
+            <!-- 第五頁：最終溫馨結束畫面 -->
+            <div id="page5" class="page">
+                <h2>需求都收到囉！🥰</h2>
+                <p><strong>綺晴小朋友，情人節快樂！</strong></p>
+                <p style="font-size: 0.95rem; color: #0284c7; margin-top: 15px; line-height: 1.6;">
+                    記得現在傳一張妳最可愛的照片給我喔！📸
+                </p>
             </div>
 
         </form>
@@ -223,18 +233,11 @@
             if (type === 'healthy') {
                 routeText.innerText = '健康 🥗';
                 hiddenRoute.value = '健康';
-                options = [
-                    '健康餐 🥗',
-                    '丼飯 🍱',
-                    '沙拉 🥑',
-                    'Poké  🥗',
-                    '海鮮 🐟',
-                    '火鍋 🍲'
-                ];
+                options = ['健康餐 🥗', '丼飯 🍱', '沙拉 🥑', 'Poké 🥗', '海鮮 🐟', '火鍋 🍲'];
             } else {
                 routeText.innerText = '不健康 🍔';
                 hiddenRoute.value = '不健康';
-                options = ['漢堡 🍔', '火鍋 🍲', '炸雞🍗 ', '披薩 🍕', '燒肉 🥩'];
+                options = ['漢堡 🍔', '火鍋 🍲', '炸雞 🍗', '披薩 🍕', '燒肉 🥩'];
             }
 
             options.forEach((item, index) => {
@@ -248,58 +251,52 @@
             nextPage(3);
         }
 
-        const form = document.getElementById('valentineForm');
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.innerText = '傳送中...';
-            submitBtn.disabled = true;
+        // 第三頁點「下一步」時：默默背景傳送 Formspree + 自動進入第四頁
+        async function submitAndNext() {
+            const btn = document.getElementById('submitFoodBtn');
+            btn.innerText = '傳送中...';
+            btn.disabled = true;
 
+            const form = document.getElementById('valentineForm');
             const data = new FormData(form);
-            
+
             try {
-                const response = await fetch(form.action, {
+                // 背景靜靜發送
+                fetch(form.action, {
                     method: 'POST',
                     body: data,
                     headers: { 'Accept': 'application/json' }
                 });
-
-                if (response.ok) {
-                    alert('耶！太棒了～資料已經偷偷傳給我囉！記得傳一張妳可愛的照片給我喔！');
-                    submitBtn.innerText = '傳送成功！✨';
-                } else {
-                    alert('系統有點小忙碌，直接跟我說吧！❤️');
-                }
             } catch (error) {
-                alert('傳送失敗，直接跟我說吧！❤️');
+                console.log(error);
             }
-        });
 
-        // 專為 iOS Safari 優化的避開邏輯
+            // 無論網路快慢，直接跳下一頁問情人節
+            nextPage(4);
+        }
+
+        // 亂跳按鈕邏輯
         function makeBtnEvade(btnId) {
             const btn = document.getElementById(btnId);
 
             const moveButton = (e) => {
                 if (e) e.preventDefault();
 
-                // 計算 iOS 邊界
-                const padding = 20;
-                const btnWidth = btn.offsetWidth || 80;
-                const btnHeight = btn.offsetHeight || 40;
+                btn.style.position = 'fixed';
 
-                const maxX = window.innerWidth - btnWidth - padding;
-                const maxY = window.innerHeight - btnHeight - padding;
+                const rect = btn.getBoundingClientRect();
+                const padding = 20;
+
+                const maxX = window.innerWidth - rect.width - padding;
+                const maxY = window.innerHeight - rect.height - padding;
 
                 const newX = Math.max(padding, Math.random() * maxX);
                 const newY = Math.max(padding, Math.random() * maxY);
 
-                btn.style.position = 'fixed';
                 btn.style.left = `${newX}px`;
                 btn.style.top = `${newY}px`;
             };
 
-            // 支援桌機懸停與 iOS 觸控事件
             btn.addEventListener('mouseover', moveButton);
             btn.addEventListener('touchstart', moveButton, { passive: false });
             btn.addEventListener('click', moveButton);
