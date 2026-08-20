@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>給綺晴小朋友的七夕驚喜 ❤️</title>
+    <title>給綺晴小朋友的七夕驚喜（我這裡還是8/19) ❤️</title>
     <style>
         * {
             box-sizing: border-box;
@@ -148,8 +148,8 @@
             height: 18px;
         }
 
-        /* 機票樣式卡片 */
-        .ticket-box {
+        /* 歌曲與機票卡片樣式 */
+        .ticket-box, .song-box {
             background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
             border: 2px dashed #0284c7;
             border-radius: 16px;
@@ -157,6 +157,38 @@
             margin: 15px 0;
             position: relative;
             box-shadow: 0 4px 10px rgba(2, 132, 199, 0.1);
+        }
+
+        .song-img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            aspect-ratio: 16/9;
+            object-fit: cover;
+        }
+
+        .song-title {
+            font-size: 1.1rem;
+            color: #0369a1;
+            font-weight: 700;
+            margin: 8px 0 12px 0;
+        }
+
+        .song-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background-color: #ff0000;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 0, 0, 0.3);
+            margin-top: 5px;
         }
 
         .ticket-header {
@@ -182,6 +214,16 @@
             font-size: 1.1rem;
             font-weight: bold;
             color: #334155;
+        }
+
+        .ticket-terms {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px dashed #bae6fd;
+            font-size: 0.8rem;
+            color: #64748b;
+            text-align: left;
+            line-height: 1.5;
         }
 
         /* 倒數計時器容器 */
@@ -218,6 +260,7 @@
     <div class="card">
         <form id="valentineForm" action="https://formspree.io/f/xljraorq" method="POST">
             <input type="hidden" name="獲得獎項" value="下學期一次飛香港找你兌換卷">
+            <input type="hidden" name="抽到的專屬歌曲" id="hiddenSong">
 
             <!-- 第一頁：七夕宣告 -->
             <div id="page1" class="page active">
@@ -255,15 +298,32 @@
                     </div>
 
                     <div class="btn-group">
-                        <button type="button" style="width: 100%;" onclick="nextPage(3)">選好了，抽禮物 🎁</button>
+                        <button type="button" style="width: 100%;" onclick="nextPage('Song')">選好了，抽今日專屬歌曲 🎵</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 第三頁：機票抽獎（必然抽到機票） -->
+            <!-- 第三頁：專屬歌曲抽獎 -->
+            <div id="pageSong" class="page">
+                <h2>今日歌曲抽獎 🎧</h2>
+                <p>點擊下方按鈕，抽取今天想送給妳的歌！</p>
+                
+                <div class="song-box" id="songBox" style="display: none;">
+                    <img id="songImage" class="song-img" src="" alt="歌曲封面">
+                    <div class="song-title" id="songTitle"></div>
+                    <a id="songUrl" class="song-link" href="#" target="_blank">▶ 點擊前往 YouTube 播放</a>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" id="drawSongBtn" style="width: 100%;" onclick="drawSong()">🎲 點我抽歌曲！</button>
+                    <button type="button" id="nextAfterSongBtn" style="width: 100%; display: none;" onclick="nextPage(3)">聽完歌，來抽禮物 🎁</button>
+                </div>
+            </div>
+
+            <!-- 第四頁：機票抽獎 -->
             <div id="page3" class="page">
-                <h2>七夕專屬驚喜抽獎 🎁</h2>
-                <p>點擊下方按鈕，抽取屬於妳的情人節大禮！</p>
+                <h2>七夕專屬驚喜禮物 🎁</h2>
+                <p>點擊下方按鈕，抽取屬於妳的情人節禮物！</p>
                 
                 <div class="ticket-box" id="ticketBox" style="display: none;">
                     <div class="ticket-header">✈️ BOARDING PASS / 專屬機票</div>
@@ -271,7 +331,11 @@
                     <div class="ticket-route">
                         <span>USA</span>
                         <span>✈️</span>
-                        <span>HONG KONG </span>
+                        <span>HONG KONG</span>
+                    </div>
+                    <div class="ticket-terms">
+                        📌 <b>使用須知：</b><br>
+                        • 你說的算
                     </div>
                 </div>
 
@@ -281,10 +345,10 @@
                 </div>
             </div>
 
-            <!-- 第四頁：倒數計時器與見面提示 -->
+            <!-- 第五頁：倒數計時器與見面提示 -->
             <div id="page4" class="page">
                 <h2>我已經好期待跟你一起聖誕節和跨年 ✈️</h2>
-                <p style="font-size: 0.95rem; color: #0284c7; font-weight: 600; margin-bottom: 5px;">距離 12/1７放假飛去香港還有：</p>
+                <p style="font-size: 0.95rem; color: #0284c7; font-weight: 600; margin-bottom: 5px;">距離 12/17 放假飛去香港還有：</p>
                 
                 <div class="countdown-container">
                     <div class="time-box">
@@ -315,9 +379,9 @@
     </div>
 
     <script>
-        function nextPage(pageNumber) {
+        function nextPage(pageIdentifier) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page' + pageNumber).classList.add('active');
+            document.getElementById('page' + pageIdentifier).classList.add('active');
         }
 
         // 選擇晚餐路線與顯示選項
@@ -341,7 +405,6 @@
                 options = ['漢堡 🍔', '火鍋 🍲', '炸雞 🍗', '披薩 🍕', '燒肉 🥩'];
             }
 
-            // 修改處：預設不加上 checked，讓使用者自由選擇
             options.forEach((item) => {
                 container.innerHTML += `
                     <label>
@@ -365,6 +428,39 @@
             document.getElementById('customFood').value = '';
         }
 
+        // 抽取歌曲邏輯（含歌曲名稱、圖片與播放網址）
+        const songList = [
+            {
+                title: "wave to earth - bad 🌊",
+                img: "https://img.youtube.com/vi/6Q5xqNkCk7w/hqdefault.jpg",
+                url: "https://www.youtube.com/watch?v=6Q5xqNkCk7w"
+            },
+            {
+                title: "HYBS - Prettiest To Me 🎸",
+                img: "https://img.youtube.com/vi/-nJJEiGQghY/hqdefault.jpg",
+                url: "https://www.youtube.com/watch?v=-nJJEiGQghY"
+            },
+            {
+                title: "Suzy - Cape 🌧️",
+                img: "https://img.youtube.com/vi/jYDG44dtPqs/hqdefault.jpg",
+                url: "https://youtu.be/jYDG44dtPqs?si=kbWkTWE4mapRsIeh"
+            }
+        ];
+
+        function drawSong() {
+            const randomIndex = Math.floor(Math.random() * songList.length);
+            const selectedSong = songList[randomIndex];
+
+            document.getElementById('songImage').src = selectedSong.img;
+            document.getElementById('songTitle').innerText = selectedSong.title;
+            document.getElementById('songUrl').href = selectedSong.url;
+            document.getElementById('hiddenSong').value = selectedSong.title;
+
+            document.getElementById('songBox').style.display = 'block';
+            document.getElementById('drawSongBtn').style.display = 'none';
+            document.getElementById('nextAfterSongBtn').style.display = 'inline-flex';
+        }
+
         // 抽機票邏輯
         function drawTicket() {
             document.getElementById('ticketBox').style.display = 'block';
@@ -372,7 +468,7 @@
             document.getElementById('nextAfterDrawBtn').style.display = 'inline-flex';
         }
 
-        // 送出表單資料並進入第四頁倒數計時
+        // 送出表單資料並進入倒數計時頁面
         async function submitAndNext() {
             const form = document.getElementById('valentineForm');
             const data = new FormData(form);
@@ -391,9 +487,9 @@
             startCountdown();
         }
 
-        // 倒數計時器邏輯（目標時間：2026/12/18 00:00:00）
+        // 倒數計時器邏輯（目標時間：2026/12/17 00:00:00）
         function startCountdown() {
-            const targetDate = new Date("2026-12-18T00:00:00").getTime();
+            const targetDate = new Date("2026-12-17T00:00:00").getTime();
 
             function updateTimer() {
                 const now = new Date().getTime();
