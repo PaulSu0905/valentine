@@ -250,7 +250,7 @@
                     
                     <div style="margin-top: 10px; text-align: left;">
                         <label style="font-size: 0.85rem; font-weight: 600;">都不想吃？自己點餐：</label>
-                        <input type="text" name="自訂想吃的餐點" placeholder="請輸入妳想吃的餐點">
+                        <input type="text" id="customFood" name="自訂想吃的餐點" placeholder="請輸入妳想吃的餐點" oninput="clearRadioSelection()">
                         <div class="note">（註明：不能寫我喔 🙈）</div>
                     </div>
 
@@ -267,7 +267,7 @@
                 
                 <div class="ticket-box" id="ticketBox" style="display: none;">
                     <div class="ticket-header">✈️ BOARDING PASS / 專屬機票</div>
-                    <div class="ticket-title">下學期一次飛香港找你兌換券 🎟️</div>
+                    <div class="ticket-title">下學期一次飛香港找你兌換券(請截圖好好保存) 🎟️</div>
                     <div class="ticket-route">
                         <span>USA</span>
                         <span>✈️</span>
@@ -341,13 +341,28 @@
                 options = ['漢堡 🍔', '火鍋 🍲', '炸雞 🍗', '披薩 🍕', '燒肉 🥩'];
             }
 
-            options.forEach((item, index) => {
+            // 修改處：預設不加上 checked，讓使用者自由選擇
+            options.forEach((item) => {
                 container.innerHTML += `
                     <label>
-                        <input type="radio" name="預設菜單選擇" value="${item}" ${index === 0 ? 'checked' : ''}> ${item}
+                        <input type="radio" name="預設菜單選擇" value="${item}" onchange="clearCustomInput()"> ${item}
                     </label>
                 `;
             });
+        }
+
+        // 輸入自訂餐點時，清空 Radio 點選狀態
+        function clearRadioSelection() {
+            const inputVal = document.getElementById('customFood').value;
+            if (inputVal.trim() !== '') {
+                const radios = document.getElementsByName('預設菜單選擇');
+                radios.forEach(radio => radio.checked = false);
+            }
+        }
+
+        // 點選 Radio 時，清空自訂輸入框內容
+        function clearCustomInput() {
+            document.getElementById('customFood').value = '';
         }
 
         // 抽機票邏輯
