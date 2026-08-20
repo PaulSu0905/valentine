@@ -298,7 +298,7 @@
                     </div>
 
                     <div class="btn-group">
-                        <button type="button" style="width: 100%;" onclick="nextPage('Song')">選好了，抽一首送給妳的歌</button>
+                        <button type="button" style="width: 100%;" onclick="validateFoodAndNext()">選好了，抽一首送給妳的歌</button>
                     </div>
                 </div>
             </div>
@@ -426,6 +426,27 @@
         // 點選 Radio 時，清空自訂輸入框內容
         function clearCustomInput() {
             document.getElementById('customFood').value = '';
+        }
+
+        // 驗證是否有勾選或輸入食物
+        function validateFoodAndNext() {
+            const customVal = document.getElementById('customFood').value.trim();
+            const radios = document.getElementsByName('預設菜單選擇');
+            let isRadioChecked = false;
+
+            for (let radio of radios) {
+                if (radio.checked) {
+                    isRadioChecked = true;
+                    break;
+                }
+            }
+
+            if (!isRadioChecked && customVal === '') {
+                alert('請先選擇一個想吃的餐點，或是填寫自訂餐點喔！');
+                return;
+            }
+
+            nextPage('Song');
         }
 
         // 抽取歌曲邏輯（含歌曲名稱、圖片與播放網址）
