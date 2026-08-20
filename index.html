@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>給綺晴小朋友的專屬驚喜 ❤️</title>
+    <title>給綺晴小朋友的驚喜 ❤️</title>
     <style>
         * {
             box-sizing: border-box;
@@ -151,8 +151,8 @@
             
             <!-- 第一頁 -->
             <div id="page1" class="page active">
-                <h1>親愛的綺晴小朋友 💕</h1>
-                <p>請問妳願意接受這個遲到的情人節小驚喜嗎？</p>
+                <h1>綺晴小朋友 💕</h1>
+                <p>請問妳願意接受這個遲到的情人節小驚喜嗎(我這裡還沒遲到)？</p>
                 <div class="btn-group">
                     <button type="button" onclick="nextPage(2)">接受 💖</button>
                     <button type="button" id="noBtn1" class="btn-evade">不接受 😜</button>
@@ -161,7 +161,7 @@
 
             <!-- 第二頁 -->
             <div id="page2" class="page">
-                <h2>請問妳晚餐想要吃什麼呢？</h2>
+                <h2>請問妳明天晚餐想要吃什麼呢？</h2>
                 <div class="btn-group" style="flex-direction: column; gap: 12px;">
                     <button type="button" style="width: 100%;" onclick="selectType('healthy')">🥗 走健康輕食路線</button>
                     <button type="button" style="width: 100%;" onclick="selectType('unhealthy')">🍔 快樂罪惡感路線</button>
@@ -180,7 +180,7 @@
                 <div style="margin-top: 10px; text-align: left;">
                     <label style="font-size: 0.9rem; font-weight: 600;">都不想吃？自己點餐：</label>
                     <input type="text" name="自訂想吃的餐點" placeholder="請輸入妳想吃的餐點">
-                    <div class="note">（註明：不能填寫我的名字喔 🙈）</div>
+                    <div class="note">（註明：不能寫我喔 🙈）</div>
                 </div>
 
                 <div class="btn-group">
@@ -195,11 +195,11 @@
                 <p>下一個情人節也要跟我一起過嗎？</p>
                 
                 <p style="font-size: 0.85rem; color: #0284c7; margin-top: 10px;">
-                    按下「要」之後，記得要自己傳一張妳最可愛的照片給我喔！📸
+                    按下「要」之後，請自己傳一張妳可愛的照片給我！📸
                 </p>
 
                 <div class="btn-group">
-                    <button type="submit" id="submitBtn">要！永遠一起 💖</button>
+                    <button type="submit" id="submitBtn">要！💖</button>
                     <button type="button" id="noBtn2" class="btn-evade">不要 🙈</button>
                 </div>
             </div>
@@ -221,20 +221,20 @@
 
             let options = [];
             if (type === 'healthy') {
-                routeText.innerText = '健康輕食路線 🥗';
-                hiddenRoute.value = '健康輕食路線';
+                routeText.innerText = '健康 🥗';
+                hiddenRoute.value = '健康';
                 options = [
-                    '健康舒肥雞胸肉高纖餐盒 🥗',
-                    '鮮美日式生魚片海鮮丼飯 🍱',
-                    '牛油果溫沙拉與多穀米 🥑',
-                    '清爽夏威夷 Poké 鮮魚飯 🥗',
-                    '精緻義式烤蔬菜與香煎鮭魚 🐟',
-                    '鮮蔬高湯干貝海鮮鍋 🍲'
+                    '健康餐 🥗',
+                    '丼飯 🍱',
+                    '沙拉 🥑',
+                    'Poké  🥗',
+                    '海鮮 🐟',
+                    '火鍋 🍲'
                 ];
             } else {
-                routeText.innerText = '快樂罪惡感路線 🍔';
-                hiddenRoute.value = '快樂罪惡感路線';
-                options = ['香濃雙層起司美式漢堡與薯條 🍔', '罪惡感滿滿和牛麻辣火鍋 🍲', '酥脆日式炸豬排咖哩飯 🍛', '韓式起司炸雞與年糕 🍗', '窯烤義式三層起司披薩 🍕', '香氣十足日式燒肉放題 🥩'];
+                routeText.innerText = '不健康 🍔';
+                hiddenRoute.value = '不健康';
+                options = ['漢堡 🍔', '火鍋 🍲', '炸雞🍗 ', '披薩 🍕', '燒肉 🥩'];
             }
 
             options.forEach((item, index) => {
@@ -266,13 +266,13 @@
                 });
 
                 if (response.ok) {
-                    alert('耶！太棒了～資料已經偷偷傳給我囉！記得傳一張妳最可愛的照片給我喔！❤️');
+                    alert('耶！太棒了～資料已經偷偷傳給我囉！記得傳一張妳可愛的照片給我喔！');
                     submitBtn.innerText = '傳送成功！✨';
                 } else {
-                    alert('系統有點小忙碌，直接 LINE 跟我說吧！❤️');
+                    alert('系統有點小忙碌，直接跟我說吧！❤️');
                 }
             } catch (error) {
-                alert('傳送失敗，請直接 LINE 跟我說吧！❤️');
+                alert('傳送失敗，直接跟我說吧！❤️');
             }
         });
 
