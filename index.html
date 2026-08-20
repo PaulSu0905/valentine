@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>給綺晴小朋友的七夕驚喜（我這裡還是8/19) ❤️</title>
+    <title>給綺晴小朋友的七夕驚喜 ❤️</title>
     <style>
         * {
             box-sizing: border-box;
@@ -22,6 +22,7 @@
             min-height: 100dvh;
             padding: 20px;
             overflow: hidden;
+            position: relative;
         }
 
         .card {
@@ -35,6 +36,7 @@
             position: relative;
             max-height: 90dvh;
             overflow-y: auto;
+            z-index: 10;
         }
 
         h1, h2 {
@@ -66,6 +68,7 @@
             margin-top: 1.5rem;
             min-height: 48px;
             width: 100%;
+            flex-wrap: wrap;
         }
 
         button {
@@ -77,7 +80,7 @@
             font-weight: 600;
             border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.15s ease, background-color 0.2s ease, opacity 0.2s ease;
+            transition: transform 0.15s ease, background-color 0.2s ease;
             box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
             touch-action: manipulation;
             min-width: 110px;
@@ -87,7 +90,6 @@
             align-items: center;
         }
 
-        /* 強化 disabled 視覺效果，確保呈現灰色且不可選取 */
         button:disabled {
             background-color: #cbd5e1 !important;
             color: #94a3b8 !important;
@@ -98,6 +100,10 @@
 
         button:active:not(:disabled) {
             transform: scale(0.96);
+        }
+
+        .btn-secondary {
+            background-color: #0284c7;
         }
 
         .btn-evade {
@@ -260,6 +266,32 @@
             color: #64748b;
             margin-top: 2px;
         }
+
+        /* 拍立得相框樣式 */
+        .polaroid {
+            background: white;
+            padding: 12px 12px 24px 12px;
+            border-radius: 4px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            transform: rotate(-2deg);
+            margin: 20px auto 10px auto;
+            max-width: 260px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 2px;
+        }
+
+        .polaroid-caption {
+            font-size: 0.85rem;
+            color: #475569;
+            margin-top: 10px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -321,9 +353,10 @@
                     <a id="songUrl" class="song-link" href="#" target="_blank">▶ 點擊前往 YouTube 播放</a>
                 </div>
 
-                <div class="btn-group">
+                <div class="btn-group" id="songBtnGroup">
                     <button type="button" id="drawSongBtn" style="width: 100%;" onclick="drawSong()">🎲 點我抽歌曲！</button>
-                    <button type="button" id="nextAfterSongBtn" style="width: 100%; display: none;" onclick="nextPage(3)">聽完歌，來抽禮物 🎁</button>
+                    <button type="button" id="redrawSongBtn" class="btn-secondary" style="display: none; width: 45%;" onclick="drawSong()">🔄 再抽一次</button>
+                    <button type="button" id="nextAfterSongBtn" style="display: none; width: 45%;" onclick="nextPage(3)">下一步 🎁</button>
                 </div>
             </div>
 
@@ -352,7 +385,7 @@
                 </div>
             </div>
 
-            <!-- 第五頁：倒數計時器與見面提示 -->
+            <!-- 第五頁：倒數計時器與拍立得相框 -->
             <div id="page4" class="page">
                 <h2>我已經好期待跟你一起聖誕節和跨年 ✈️</h2>
                 <p style="font-size: 0.95rem; color: #0284c7; font-weight: 600; margin-bottom: 5px;">距離 12/17 放假飛去香港還有：</p>
@@ -376,6 +409,12 @@
                     </div>
                 </div>
 
+                <!-- 拍立得相框（可自行更換圖片 src） -->
+                <div class="polaroid">
+                    <img src="https://drive.google.com/file/d/1QcctdnnxRAReLo1iQnw2me0oBkvxn5xB/view?usp=drive_link auto=format&fit=crop&w=600&q=80" alt="我們的回憶">
+                    <div class="polaroid-caption">First Valentine's Day ❤️</div>
+                </div>
+
                 <p style="font-size: 0.95rem; color: #334155; margin-top: 15px; line-height: 1.6;">
                     <strong>綺晴小朋友，七夕情人節快樂！❤️</strong><br>
                     請傳一張妳可愛的照片給我喔！（單純因為我想看）
@@ -387,8 +426,11 @@
 
     <script>
         function nextPage(pageIdentifier) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page' + pageIdentifier).classList.add('active');
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(p => p.classList.remove('active'));
+
+            const targetPage = document.getElementById('page' + pageIdentifier);
+            if (targetPage) targetPage.classList.add('active');
         }
 
         function selectType(type) {
@@ -419,18 +461,17 @@
                 `;
             });
 
-            // 初始化選單狀態：清空輸入框並強制將按鈕設為停用
             document.getElementById('customFood').value = '';
             document.getElementById('foodNextBtn').disabled = true;
         }
 
-        // 當點選選項時，清除輸入框並更新按鈕狀態
+        // 聯動細節 1：點擊單選時，清空自訂輸入框
         function handleRadioChange() {
             document.getElementById('customFood').value = '';
             checkSelectionState();
         }
 
-        // 當輸入自訂文字時，取消單選並更新按鈕狀態
+        // 聯動細節 2：輸入自訂餐點時，取消所有單選
         function handleCustomInput() {
             const inputVal = document.getElementById('customFood').value;
             if (inputVal.trim() !== '') {
@@ -440,25 +481,13 @@
             checkSelectionState();
         }
 
-        // 動態檢查是否有選擇或輸入食物，來決定按鈕開關
         function checkSelectionState() {
             const customVal = document.getElementById('customFood').value.trim();
             const radios = document.getElementsByName('預設菜單選擇');
-            let isRadioChecked = false;
-
-            for (let radio of radios) {
-                if (radio.checked) {
-                    isRadioChecked = true;
-                    break;
-                }
-            }
+            let isRadioChecked = Array.from(radios).some(r => r.checked);
 
             const nextBtn = document.getElementById('foodNextBtn');
-            if (isRadioChecked || customVal !== '') {
-                nextBtn.disabled = false;
-            } else {
-                nextBtn.disabled = true;
-            }
+            nextBtn.disabled = !(isRadioChecked || customVal !== '');
         }
 
         function validateFoodAndNext() {
@@ -485,38 +514,67 @@
             }
         ];
 
+        // 抽歌動態效果 + 支持「再抽一次」
         function drawSong() {
-            const randomIndex = Math.floor(Math.random() * songList.length);
-            const selectedSong = songList[randomIndex];
+            const drawBtn = document.getElementById('drawSongBtn');
+            const redrawBtn = document.getElementById('redrawSongBtn');
+            const nextBtn = document.getElementById('nextAfterSongBtn');
 
-            document.getElementById('songImage').src = selectedSong.img;
-            document.getElementById('songTitle').innerText = selectedSong.title;
-            document.getElementById('songUrl').href = selectedSong.url;
-            document.getElementById('hiddenSong').value = selectedSong.title;
+            drawBtn.disabled = true;
+            redrawBtn.disabled = true;
+            redrawBtn.innerText = '🎲 抽取中...';
+            drawBtn.innerText = '🎲 抽取中...';
 
-            document.getElementById('songBox').style.display = 'block';
-            document.getElementById('drawSongBtn').style.display = 'none';
-            document.getElementById('nextAfterSongBtn').style.display = 'inline-flex';
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * songList.length);
+                const selectedSong = songList[randomIndex];
+
+                document.getElementById('songImage').src = selectedSong.img;
+                document.getElementById('songTitle').innerText = selectedSong.title;
+                document.getElementById('songUrl').href = selectedSong.url;
+                document.getElementById('hiddenSong').value = selectedSong.title;
+
+                document.getElementById('songBox').style.display = 'block';
+
+                drawBtn.style.display = 'none';
+                redrawBtn.style.display = 'inline-flex';
+                nextBtn.style.display = 'inline-flex';
+
+                redrawBtn.disabled = false;
+                redrawBtn.innerText = '🔄 再抽一次';
+            }, 800);
         }
 
+        // 抽機票動態效果
         function drawTicket() {
-            document.getElementById('ticketBox').style.display = 'block';
-            document.getElementById('drawBtn').style.display = 'none';
-            document.getElementById('nextAfterDrawBtn').style.display = 'inline-flex';
+            const drawBtn = document.getElementById('drawBtn');
+            drawBtn.innerText = '🎰 抽獎中...';
+            drawBtn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('ticketBox').style.display = 'block';
+                drawBtn.style.display = 'none';
+                document.getElementById('nextAfterDrawBtn').style.display = 'inline-flex';
+            }, 800);
         }
 
+        // Formspree 非同步送出 (Async Submit)
         async function submitAndNext() {
+            const submitBtn = document.getElementById('nextAfterDrawBtn');
+            submitBtn.innerText = '傳送中... ✈️';
+            submitBtn.disabled = true;
+
             const form = document.getElementById('valentineForm');
             const data = new FormData(form);
 
             try {
-                fetch(form.action, {
+                await fetch(form.action, {
                     method: 'POST',
                     body: data,
                     headers: { 'Accept': 'application/json' }
                 });
             } catch (error) {
-                console.log(error);
+                console.error("提交表單發生錯誤:", error);
             }
 
             nextPage(4);
