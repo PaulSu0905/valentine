@@ -2,47 +2,52 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>給綺晴小朋友的專屬驚喜 ❤️</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: #e0f2fe; /* 淺藍色背景 */
+            background-color: #e0f2fe;
             color: #334155;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            min-height: 100dvh; /* 相容 iOS 網址列高度 */
+            padding: 20px;
             overflow: hidden;
         }
 
         .card {
             background: #ffffff;
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(186, 230, 253, 0.5);
+            padding: 2rem 1.5rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(186, 230, 253, 0.6);
             text-align: center;
-            width: 90%;
-            max-width: 420px;
+            width: 100%;
+            max-width: 400px;
             position: relative;
-            transition: all 0.3s ease;
+            max-height: 90dvh;
+            overflow-y: auto;
         }
 
         h1, h2 {
             color: #0284c7;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            font-size: 1.4rem;
         }
 
         p {
             margin-bottom: 1rem;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 1rem;
         }
 
         .page {
@@ -56,47 +61,47 @@
         .btn-group {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            align-items: center;
+            gap: 12px;
             margin-top: 1.5rem;
             position: relative;
-            min-height: 50px;
+            min-height: 52px;
         }
 
         button {
             background-color: #38bdf8;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 12px 20px;
             font-size: 1rem;
-            border-radius: 25px;
+            font-weight: 600;
+            border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
-            box-shadow: 0 4px 10px rgba(56, 189, 248, 0.3);
+            transition: transform 0.15s ease, background-color 0.2s ease;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+            touch-action: manipulation;
         }
 
-        button:hover {
-            background-color: #0284c7;
-            transform: translateY(-2px);
+        button:active {
+            transform: scale(0.96);
         }
 
+        /* 拒絕按鈕初始樣式：齊平排版 */
         .btn-evade {
-            position: absolute;
             background-color: #94a3b8;
-            box-shadow: none;
-        }
-
-        .btn-evade:hover {
-            background-color: #64748b;
+            box-shadow: 0 4px 12px rgba(148, 163, 184, 0.2);
+            z-index: 999;
         }
 
         input[type="text"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #bae6fd;
-            border-radius: 10px;
-            margin-top: 10px;
+            border-radius: 12px;
+            margin-top: 8px;
             outline: none;
             font-size: 0.95rem;
+            -webkit-appearance: none;
         }
 
         input[type="text"]:focus {
@@ -105,102 +110,137 @@
 
         .note {
             font-size: 0.8rem;
-            color: #94a3b8;
-            margin-top: 4px;
+            color: #64748b;
+            margin-top: 6px;
         }
 
         .food-options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             text-align: left;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
+            max-height: 240px;
+            overflow-y: auto;
+            padding-right: 4px;
         }
 
         .food-options label {
             background: #f0f9ff;
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border-radius: 12px;
             cursor: pointer;
             border: 1px solid #bae6fd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+        }
+
+        .food-options input[type="radio"] {
+            accent-color: #0284c7;
+            width: 18px;
+            height: 18px;
         }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <div id="page1" class="page active">
-            <h1>親愛的綺晴小朋友 💕</h1>
-            <p>請問妳願意接受這個遲到的情人節小驚喜嗎？</p>
-            <div class="btn-group">
-                <button onclick="nextPage(2)">接受 💖</button>
-                <button id="noBtn1" class="btn-evade" style="right: 20px;">不接受 😜</button>
-            </div>
-        </div>
-
-        <div id="page2" class="page">
-            <h2>請問妳晚餐想要吃什麼呢？</h2>
-            <div class="btn-group" style="flex-direction: column; gap: 10px;">
-                <button onclick="selectType('healthy')">🥗 走健康路線</button>
-                <button onclick="selectType('unhealthy')">🍔 快樂不健康路線</button>
-            </div>
-        </div>
-
-        <div id="page3" class="page">
-            <h2>為綺晴小朋友準備的選單 🍽️</h2>
-            <div class="food-options" id="foodContainer">
+        <form id="valentineForm" action="https://formspree.io/f/xljraorq" method="POST">
+            
+            <!-- 第一頁 -->
+            <div id="page1" class="page active">
+                <h1>親愛的綺晴小朋友 💕</h1>
+                <p>請問妳願意接受這個遲到的情人節小驚喜嗎？</p>
+                <div class="btn-group">
+                    <button type="button" onclick="nextPage(2)">接受 💖</button>
+                    <button type="button" id="noBtn1" class="btn-evade">不接受 😜</button>
                 </div>
-            
-            <div style="margin-top: 15px; text-align: left;">
-                <label>都不想吃？自己點餐：</label>
-                <input type="text" id="customFood" placeholder="請輸入妳想吃的餐點">
-                <div class="note">（註明：不能填寫我的名字喔 🙈）</div>
             </div>
 
-            <div class="btn-group">
-                <button onclick="nextPage(4)">選好了，下一步 ✨</button>
+            <!-- 第二頁 -->
+            <div id="page2" class="page">
+                <h2>請問妳晚餐想要吃什麼呢？</h2>
+                <div class="btn-group" style="flex-direction: column; gap: 12px;">
+                    <button type="button" style="width: 100%;" onclick="selectType('healthy')">🥗 走健康輕食路線</button>
+                    <button type="button" style="width: 100%;" onclick="selectType('unhealthy')">🍔 快樂罪惡感路線</button>
+                </div>
             </div>
-        </div>
 
-        <div id="page4" class="page">
-            <h2>需求都收到囉！🥰</h2>
-            <p><strong>綺晴小朋友，情人節快樂！</strong></p>
-            <p>下一個情人節也要跟我一起過嗎？</p>
-            
-            <p style="font-size: 0.9rem; color: #0284c7; margin-top: 15px;">
-                按下「要」之後，記得要自己傳一張妳最可愛的照片給我喔！📸
-            </p>
+            <!-- 第三頁 -->
+            <div id="page3" class="page">
+                <h2>為綺晴小朋友準備的選單 🍽️</h2>
+                
+                <p style="font-size: 0.85rem; color: #0284c7; margin-bottom: 8px;">路線：<span id="routeText"></span></p>
+                <input type="hidden" name="飲食路線" id="hiddenRoute">
 
-            <div class="btn-group">
-                <button onclick="finish()">要！永遠一起 💖</button>
-                <button id="noBtn2" class="btn-evade" style="right: 10px;">不要 🙈</button>
+                <div class="food-options" id="foodContainer"></div>
+                
+                <div style="margin-top: 10px; text-align: left;">
+                    <label style="font-size: 0.9rem; font-weight: 600;">都不想吃？自己點餐：</label>
+                    <input type="text" name="自訂想吃的餐點" placeholder="請輸入妳想吃的餐點">
+                    <div class="note">（註明：不能填寫我的名字喔 🙈）</div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" style="width: 100%;" onclick="nextPage(4)">選好了，下一步 ✨</button>
+                </div>
             </div>
-        </div>
+
+            <!-- 第四頁 -->
+            <div id="page4" class="page">
+                <h2>需求都收到囉！🥰</h2>
+                <p><strong>綺晴小朋友，情人節快樂！</strong></p>
+                <p>下一個情人節也要跟我一起過嗎？</p>
+                
+                <p style="font-size: 0.85rem; color: #0284c7; margin-top: 10px;">
+                    按下「要」之後，記得要自己傳一張妳最可愛的照片給我喔！📸
+                </p>
+
+                <div class="btn-group">
+                    <button type="submit" id="submitBtn">要！永遠一起 💖</button>
+                    <button type="button" id="noBtn2" class="btn-evade">不要 🙈</button>
+                </div>
+            </div>
+
+        </form>
     </div>
 
     <script>
-        // 切換頁面
         function nextPage(pageNumber) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page' + pageNumber).classList.add('active');
         }
 
-        // 選擇健康/不健康路線
         function selectType(type) {
             const container = document.getElementById('foodContainer');
+            const routeText = document.getElementById('routeText');
+            const hiddenRoute = document.getElementById('hiddenRoute');
             container.innerHTML = '';
 
             let options = [];
             if (type === 'healthy') {
-                options = ['健康舒肥雞胸肉餐盒 🥗', '鮮美日式生魚片丼飯 🍱', '清涼鮮蔬沙拉 / 溫沙拉 🥑'];
+                routeText.innerText = '健康輕食路線 🥗';
+                hiddenRoute.value = '健康輕食路線';
+                options = [
+                    '健康舒肥雞胸肉高纖餐盒 🥗',
+                    '鮮美日式生魚片海鮮丼飯 🍱',
+                    '牛油果溫沙拉與多穀米 🥑',
+                    '清爽夏威夷 Poké 鮮魚飯 🥗',
+                    '精緻義式烤蔬菜與香煎鮭魚 🐟',
+                    '鮮蔬高湯干貝海鮮鍋 🍲'
+                ];
             } else {
-                options = ['香濃起司美式漢堡炸雞 🍔', '罪惡感滿滿麻辣火鍋 🍲', '酥脆日式炸豬排咖哩 🍛'];
+                routeText.innerText = '快樂罪惡感路線 🍔';
+                hiddenRoute.value = '快樂罪惡感路線';
+                options = ['香濃雙層起司美式漢堡與薯條 🍔', '罪惡感滿滿和牛麻辣火鍋 🍲', '酥脆日式炸豬排咖哩飯 🍛', '韓式起司炸雞與年糕 🍗', '窯烤義式三層起司披薩 🍕', '香氣十足日式燒肉放題 🥩'];
             }
 
             options.forEach((item, index) => {
                 container.innerHTML += `
                     <label>
-                        <input type="radio" name="food" value="${item}" ${index === 0 ? 'checked' : ''}> ${item}
+                        <input type="radio" name="預設菜單選擇" value="${item}" ${index === 0 ? 'checked' : ''}> ${item}
                     </label>
                 `;
             });
@@ -208,30 +248,63 @@
             nextPage(3);
         }
 
-        // 完成結尾
-        function finish() {
-            alert('耶！太棒了～記得傳一張妳最可愛的照片給我喔！❤️');
-        }
+        const form = document.getElementById('valentineForm');
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerText = '傳送中...';
+            submitBtn.disabled = true;
 
-        // 按鈕隨機跳動邏輯 (躲避滑鼠/觸控)
+            const data = new FormData(form);
+            
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    alert('耶！太棒了～資料已經偷偷傳給我囉！記得傳一張妳最可愛的照片給我喔！❤️');
+                    submitBtn.innerText = '傳送成功！✨';
+                } else {
+                    alert('系統有點小忙碌，直接 LINE 跟我說吧！❤️');
+                }
+            } catch (error) {
+                alert('傳送失敗，請直接 LINE 跟我說吧！❤️');
+            }
+        });
+
+        // 專為 iOS Safari 優化的避開邏輯
         function makeBtnEvade(btnId) {
             const btn = document.getElementById(btnId);
-            
-            const moveButton = () => {
-                // 限制在視窗可見範圍內
-                const x = Math.random() * (window.innerWidth - btn.offsetWidth - 40) + 20;
-                const y = Math.random() * (window.innerHeight - btn.offsetHeight - 40) + 20;
-                
+
+            const moveButton = (e) => {
+                if (e) e.preventDefault();
+
+                // 計算 iOS 邊界
+                const padding = 20;
+                const btnWidth = btn.offsetWidth || 80;
+                const btnHeight = btn.offsetHeight || 40;
+
+                const maxX = window.innerWidth - btnWidth - padding;
+                const maxY = window.innerHeight - btnHeight - padding;
+
+                const newX = Math.max(padding, Math.random() * maxX);
+                const newY = Math.max(padding, Math.random() * maxY);
+
                 btn.style.position = 'fixed';
-                btn.style.left = `${x}px`;
-                btn.style.top = `${y}px`;
+                btn.style.left = `${newX}px`;
+                btn.style.top = `${newY}px`;
             };
 
+            // 支援桌機懸停與 iOS 觸控事件
             btn.addEventListener('mouseover', moveButton);
-            btn.addEventListener('touchstart', moveButton); // 支援手機觸控
+            btn.addEventListener('touchstart', moveButton, { passive: false });
+            btn.addEventListener('click', moveButton);
         }
 
-        // 初始化跳動按鈕
         makeBtnEvade('noBtn1');
         makeBtnEvade('noBtn2');
     </script>
